@@ -4,9 +4,12 @@ import mongoose from 'mongoose';
 import productRouter from './routes/productRouter.js'; // Assuming you have a Product model defined in routes/productRouter.js
 import userRouter from './routes/userRouter.js'; // Assuming you have a Product model defined in routes/productRouter.js
 import jwt from "jsonwebtoken";
+import dotenv from 'dotenv';
+dotenv.config();
+
 const app = express();
 
-const mongoUrl = "mongodb+srv://admin:123@cluster0.30a0apn.mongodb.net/test1?retryWrites=true&w=majority&appName=Cluster0"
+const mongoUrl = process.env.MONGO_DB_URI
 
 mongoose.connect(mongoUrl, {})
 
@@ -21,7 +24,8 @@ app.use(
         const token = req.header("Authorization")?.replace("Bearer ", "")
         // console.log(token)
         if (token != null) {
-            jwt.verify(token, "cbc-secret-key-7973", (error, decoded) => {
+            // jwt.verify(token, "cbc-secret-key-7973", (error, decoded) => {
+            jwt.verify(token,process.env.SECRET, (error, decoded) => {
                 if (!error) {
                     // console.log(decoded)
                     req.user = decoded
