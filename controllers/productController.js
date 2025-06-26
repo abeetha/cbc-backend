@@ -1,9 +1,9 @@
-import Product from '../models/product.js'; 
+import Product from '../models/product.js';
 import { isAdmin } from './userController.js'; // Assuming you have an auth utility to check admin status
 
 export function createProduct(req, res) {
 
-    if(!isAdmin(req)) {
+    if (!isAdmin(req)) {
         // return res.status(403).json({ message: 'Please login as administrator to create products' });
         res.json({
             message: "Please login as administrator to add products"
@@ -17,7 +17,7 @@ export function createProduct(req, res) {
             res.json({ message: 'Product created successfully' });
         })
         .catch((error) => {
-            res.json({ message: 'Error creating product', error });
+            res.status(403).json({ message: 'Error creating product', error });
         });
 }
 
@@ -31,3 +31,25 @@ export function getProducts(req, res) {
             res.status(500).json({ message: 'Error fetching products', error });
         });
 }
+
+export function deleteProduct(req, res) {
+    if (!isAdmin(req)) {
+        res.status(403).json({
+            message: "Please login as administrator to delete products"
+        })
+        return
+    }
+    const productId = req.params.productId
+    Product.deleteOne(
+        { productId: productId }
+    ).then(() => {
+        res.json({
+            message: "Product deleted successfully"
+        })
+    }).catch((error) => {
+        res.status(403).json({
+            message: error
+        })
+    })
+}
+

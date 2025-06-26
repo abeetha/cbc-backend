@@ -72,7 +72,15 @@ export function loginUser(req, res) {
                     }, process.env.SECRET);
                     res.json({
                         message: "User loged in",
-                        token: token
+                        token: token,
+                        user: {
+                            firstName: user.firstName,
+                            lastName: user.lastName,
+                            isBlocked: user.isBlocked,
+                            type: user.type,
+                            profilePicture: user.profilePicture,
+                            email: user.email,
+                        }
                     })
                 } else {
                     res.json({
